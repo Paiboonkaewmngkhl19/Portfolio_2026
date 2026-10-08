@@ -480,7 +480,6 @@ export default function Homepage() {
               </footer>
             </article>
 
-            {/* Hidden for now — BMS Internal Transfer Center
             <article
               className="work-card work-card--link"
               onClick={() => { window.location.hash = '#/project/itc' }}
@@ -499,9 +498,7 @@ export default function Homepage() {
                 <span>Patient Transfer System, Design app</span>
               </footer>
             </article>
-            */}
 
-            {/* Hidden for now — EHP CiS
             <article className="work-card">
               <div className="work-card__hero work-card__hero--video">
                 <video
@@ -519,12 +516,10 @@ export default function Homepage() {
                 <span>Signed and Payment, Design app</span>
               </footer>
             </article>
-            */}
           </div>
 
           {/* RIGHT COLUMN */}
           <div className="work__col">
-            {/* Hidden for now — BMS Smart Payment Kiosk
             <article
               className="work-card work-card--link"
               onClick={() => { window.location.hash = '#/project/kiosk' }}
@@ -549,9 +544,7 @@ export default function Homepage() {
                 <span>Payment, Design app</span>
               </footer>
             </article>
-            */}
 
-            {/* Hidden for now — Lab Online
             <article
               className="work-card work-card--link"
               onClick={() => window.open('https://l-a-b-onlile-dvkp8n.flutterflow.app/', '_blank', 'noopener,noreferrer')}
@@ -576,9 +569,7 @@ export default function Homepage() {
                 <span>Management, website</span>
               </footer>
             </article>
-            */}
 
-            {/* Hidden for now — AtlasHomeCare
             <article className="work-card work-card--tall">
               <WorkSlideshow
                 video={asset('assets/AHC/AHC.mp4')}
@@ -591,7 +582,6 @@ export default function Homepage() {
                 <span>Public health officer, Design app</span>
               </footer>
             </article>
-            */}
           </div>
         </div>
       </section>
@@ -1148,7 +1138,6 @@ function RollingNumber({ text }) {
 // frames (2s each), looping back to the video. Reuses the Donation-CSR
 // (--tmn) styling so it inherits the hover-blur + "View Project" overlay.
 // Only used by currently-hidden work cards (ITC, AtlasHomeCare).
-// eslint-disable-next-line no-unused-vars
 function WorkSlideshow({ video, images, label, overlay = 'View Project' }) {
   const [step, setStep] = useState(0) // 0 = video, 1..N = images
   const videoRef = useRef(null)
