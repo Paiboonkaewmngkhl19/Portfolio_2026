@@ -1,0 +1,2411 @@
+/* =====================================================
+   Homepage — Portfolio2026
+   Design tokens
+   ===================================================== */
+:root {
+  --c-cream: #fffbf2;
+  --c-forest: #03240f;
+  --c-forest-deep: #03240f;
+  --c-green: #077f33;
+  --c-green-bright: #0c8a39;
+  --c-gold: #ead389;
+  --shadow-soft: 0 2px 4px rgba(3, 49, 9, 0.25);
+  --shadow-strong: 0 2px 4px rgba(3, 49, 9, 0.5);
+  --font-serif: 'Inria Serif', Georgia, 'Times New Roman', serif;
+
+  /* =====================================================
+     Liquid Glass tokens
+     Light 45°  |  Reflection 80  |  Depth 20
+     Dispersion 50  |  Frost 4
+     ===================================================== */
+  --glass-light-angle: 80deg;        /* sheen direction */
+  --glass-reflection: 0.50;          /* highlight intensity 0-1 */
+  --glass-depth: 20px;               /* shadow / inset depth */
+  --glass-dispersion: 0.10;          /* chromatic aberration strength */
+  --glass-frost: 5px;                /* backdrop blur radius */
+
+  --glass-bg: rgba(0, 0, 0, 0.12);
+  --glass-bg-hover: rgba(0, 0, 0, 0.163);
+  --glass-bg-active: rgba(255, 255, 255, 0.748);
+  --glass-border: rgba(255, 255, 255, 0.366);
+  --glass-border-hover: rgba(255, 255, 255, 0.735);
+
+  /* Depth 20 → layered drop shadow + inset top-light from 45° */
+  --glass-shadow:
+    0 calc(var(--glass-depth) * 0.4) calc(var(--glass-depth) * 1) rgba(3, 36, 15, 0.28),
+    0 calc(var(--glass-depth) * 0.1) calc(var(--glass-depth) * 0.3) rgba(3, 36, 15, 0.22),
+    inset 0 1px 0 rgba(255, 255, 255, calc(var(--glass-reflection) * 0.6)),
+    inset 0 -1px 0 rgba(255, 255, 255, 0.18),
+    /* Dispersion 50 → faint chromatic rim */
+    inset 1px 0 0 rgba(255, 80, 80, var(--glass-dispersion)),
+    inset -1px 0 0 rgba(80, 140, 255, var(--glass-dispersion));
+  --glass-shadow-hover:
+    0 calc(var(--glass-depth) * 0.6) calc(var(--glass-depth) * 1.4) rgba(3, 36, 15, 0.35),
+    0 calc(var(--glass-depth) * 0.15) calc(var(--glass-depth) * 0.4) rgba(3, 36, 15, 0.25),
+    inset 0 1px 0 rgba(255, 255, 255, calc(var(--glass-reflection) * 0.85)),
+    inset 0 -1px 0 rgba(255, 255, 255, 0.22),
+    inset 1px 0 0 rgba(255, 80, 80, var(--glass-dispersion)),
+    inset -1px 0 0 rgba(80, 140, 255, var(--glass-dispersion));
+  --glass-shadow-active:
+    0 calc(var(--glass-depth) * 0.2) calc(var(--glass-depth) * 0.5) rgba(3, 36, 15, 0.28),
+    inset 0 1px 0 rgba(255, 255, 255, calc(var(--glass-reflection) * 0.3));
+}
+
+.homepage {
+  position: relative;
+  width: 100%;
+  min-height: 100vh;
+  background: var(--c-cream);
+  font-family: var(--font-serif);
+  /* Reserve scroll room equal to the footer so the content can lift off it
+     and reveal the pinned footer underneath (height set in JS). */
+  padding-bottom: var(--footer-h, 380px);
+}
+
+/* All sections ride above the pinned footer and stay opaque so it only
+   shows once they've scrolled past (footer is z-index: 0). */
+.homepage > section {
+  position: relative;
+  z-index: 1;
+}
+
+html, body {
+  overflow-x: hidden;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+/* =====================================================
+   HERO
+   ===================================================== */
+.hero {
+  position: relative;
+  width: 100%;
+  min-height: 100vh;
+  height: 100vh;
+  overflow: hidden;
+  display: flex;
+}
+
+.hero__bg {
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: center;
+  z-index: 0;
+}
+
+/* Bottom-edge fade — seamlessly transitions into the forest bg of info */
+.hero__continue {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -1px;
+  width: 100%;
+  height: 160px;
+  z-index: 32;
+  pointer-events: none;
+  background: linear-gradient(
+    180deg,
+    rgba(3, 36, 15, 0) 0%,
+    rgba(3, 36, 15, 0.55) 50%,
+    #03240f 90%,
+    #03240f 100%
+  );
+}
+
+/* Blurred copy of the hero image, faded so only the upper-left
+   (where the headline sits) is blurred. Toward the lower-right the
+   mask becomes transparent, revealing the sharp layer underneath. */
+.hero__bg--blur {
+  z-index: 1;
+  filter: blur(14px);
+  transform: scale(1.05); /* hide the blur edge */
+  /* Soft radial halo centered on the headline so the blur is contained
+     to the text area and fades out smoothly in every direction. */
+  -webkit-mask-image: radial-gradient(
+    ellipse 28% 42% at 25% 38%,
+    #000 0%,
+    rgba(0, 0, 0, 0.9) 50%,
+    rgba(0, 0, 0, 0.25) 85%,
+    rgba(0, 0, 0, 0) 100%
+  );
+  mask-image: radial-gradient(
+    ellipse 28% 42% at 25% 38%,
+    #000 0%,
+    rgba(0, 0, 0, 0.9) 50%,
+    rgba(0, 0, 0, 0.25) 85%,
+    rgba(0, 0, 0, 0) 100%
+  );
+}
+
+.hero__content {
+  position: relative;
+  z-index: 2;
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 7vh 0 14vh 163px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-start;
+  gap: 32px;
+  width: 100%;
+  height: 100%;
+}
+
+/* ---- Entrance reveal: fade + rise from below, staggered on load ---- */
+@keyframes hero-rise {
+  from { opacity: 0; transform: translateY(42px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.hero__tagline,
+.hero__title,
+.hero__slide,
+.hero__avatars {
+  animation: hero-rise 0.9s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+.hero__tagline  { animation-delay: 0.10s; }
+.hero__title    { animation-delay: 0.25s; }
+.hero__slide    { animation-delay: 0.40s; }
+.hero__avatars  { animation-delay: 0.55s; }
+
+.hero__tagline {
+  margin: 0;
+  font-family: var(--font-serif);
+  font-weight: 400;
+  font-size: 36px;
+  color: var(--c-forest);
+  text-shadow: var(--shadow-soft);
+  max-width: 610px;
+}
+
+.hero__title {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  font-weight: 700;
+  font-size: 56px;
+  line-height: 70px;
+  text-shadow: var(--shadow-strong);
+}
+
+.hero__title-line {
+  display: block;
+  white-space: nowrap;
+}
+
+.hero__name,
+.hero__role {
+  background: linear-gradient(90deg, #03240f, #0a8938);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+}
+
+.hero__nickname {
+  color: #ffffff;
+  -webkit-text-fill-color: #ffffff;
+}
+
+.hero__slide {
+  position: relative;
+  background: var(--glass-bg);
+  backdrop-filter: blur(16px) saturate(180%) contrast(110%);
+  -webkit-backdrop-filter: blur(16px) saturate(180%) contrast(110%);
+  border: 1px solid var(--glass-border);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, calc(var(--glass-reflection) * 0.6)),
+    inset 0 -1px 0 rgba(255, 255, 255, 0.18),
+    inset 1px 0 0 rgba(255, 80, 80, var(--glass-dispersion)),
+    inset -1px 0 0 rgba(80, 140, 255, var(--glass-dispersion));
+  padding: 20px;
+  border-radius: 24px;
+  width: fit-content;
+  height: fit-content;
+  overflow: hidden;
+}
+
+/* Inner clipping window — sized to exactly one slide-item (80px)
+   so we never see the next slide bleeding into the padding area. */
+.hero__slide-window {
+  position: relative;
+  height: 80px;
+  overflow: hidden;
+}
+
+/* Vertical auto-slide track — three unique slides + a duplicate of
+   slide 1 at the end so the wrap-around is seamless. */
+.hero__slide-track {
+  display: flex;
+  flex-direction: column;
+  animation: hero-slide-up 10s ease-in-out infinite;
+  will-change: transform;
+}
+
+.hero__slide-item {
+  height: 80px;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+@keyframes hero-slide-up {
+  0%,   22% { transform: translateY(0); }
+  30%,  55% { transform: translateY(-80px); }
+  63%,  88% { transform: translateY(-160px); }
+  96%, 100% { transform: translateY(-240px); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero__slide-track {
+    animation: none;
+    transform: translateY(0);
+  }
+  .hero__tagline,
+  .hero__title,
+  .hero__slide,
+  .hero__avatars {
+    animation: none;
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* 45° light sheen on the hero slide */
+.hero__slide::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: linear-gradient(
+    var(--glass-light-angle),
+    rgba(255, 255, 255, calc(var(--glass-reflection) * 0.55)) 0%,
+    rgba(255, 255, 255, calc(var(--glass-reflection) * 0.15)) 35%,
+    rgba(65, 65, 65, 0) 55%,
+    rgba(255, 255, 255, calc(var(--glass-reflection) * 0.18)) 100%
+  );
+  pointer-events: none;
+  opacity: var(--glass-reflection);
+}
+
+.hero__slide > * {
+  position: relative;
+  z-index: 1;
+}
+
+.hero__slide p {
+  margin: 0;
+  font-family: var(--font-serif);
+  font-weight: 400;
+  font-size: 30px;
+  line-height: 40px;
+  color: #ffffff;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.35);
+  white-space: nowrap;
+}
+
+.hero__avatars {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  background: var(--glass-bg);
+  backdrop-filter: blur(16px) saturate(180%) contrast(110%);
+  -webkit-backdrop-filter: blur(16px) saturate(180%) contrast(110%);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--glass-shadow);
+  padding: 8px;
+  border-radius: 1000px;
+  overflow: hidden;
+}
+
+/* 45° light sheen on the avatars pill */
+.hero__avatars::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: linear-gradient(
+    var(--glass-light-angle),
+    rgba(255, 255, 255, calc(var(--glass-reflection) * 0.55)) 0%,
+    rgba(255, 255, 255, calc(var(--glass-reflection) * 0.15)) 35%,
+    rgba(255, 255, 255, 0) 55%,
+    rgba(255, 255, 255, calc(var(--glass-reflection) * 0.18)) 100%
+  );
+  pointer-events: none;
+  opacity: var(--glass-reflection);
+}
+
+.hero__avatar {
+  z-index: 1;
+}
+
+.hero__avatar {
+  display: block;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  overflow: hidden;
+  margin-right: -12px;
+  position: relative;
+  border: 2px solid rgba(255, 255, 255, 0.6);
+  box-sizing: content-box;
+}
+
+.hero__avatar:last-child {
+  margin-right: 0;
+}
+
+.hero__avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* =====================================================
+   STICKY NAVBAR
+   ===================================================== */
+/* Fixed-position navbar with two states, driven by JS scroll detection.
+   - Initial:  floats at the bottom edge of the hero (visible above the fold).
+   - Pinned:   smoothly slides up to the top of the viewport once the user
+              scrolls past the hero. position: fixed keeps the
+              backdrop-filter blur intact regardless of ancestor overflow. */
+.navbar {
+  position: fixed;
+  top: calc(100vh - 96px);
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 50;
+  display: flex;
+  gap: 19px;
+  align-items: center;
+  justify-content: center;
+  padding: 16px 8px;
+  width: max-content;
+  isolation: isolate;
+  transition: top 0.55s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.navbar--pinned {
+  top: 0;
+}
+
+/* Links row — sits inline on desktop, becomes a dropdown on mobile */
+.navbar__links {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+/* Brand + hamburger are mobile-only */
+.navbar__brand,
+.navbar__toggle {
+  display: none;
+}
+
+.navbar__item {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 120px;
+  padding: 10px 8px;
+  background: var(--glass-bg);
+  /* Frost 4 + slight saturation boost for refraction realism */
+  backdrop-filter: blur(16px) saturate(180%) contrast(110%);
+  -webkit-backdrop-filter: blur(16px) saturate(180%) contrast(110%);
+  border: 1px solid var(--glass-border);
+  border-radius: 100px;
+  box-shadow: var(--glass-shadow);
+  font-family: var(--font-serif);
+  font-weight: 400;
+  font-size: 16px;
+  color: #fff;
+  text-decoration: none;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.35);
+  white-space: nowrap;
+  overflow: hidden;
+  cursor: pointer;
+  transition:
+    color 0.45s cubic-bezier(0.4, 0, 0.2, 1),
+    background-color 0.45s cubic-bezier(0.4, 0, 0.2, 1),
+    border-color 0.45s cubic-bezier(0.4, 0, 0.2, 1),
+    text-shadow 0.45s cubic-bezier(0.4, 0, 0.2, 1),
+    transform 0.3s ease,
+    box-shadow 0.3s ease;
+}
+
+/* =====================================================
+   Adaptive navbar theme — text color follows bg luminance
+   ===================================================== */
+/* Keep backgrounds VERY translucent so the backdrop-filter blur stays visible.
+   Only color, border-color and text-shadow swap for adaptive contrast. */
+.navbar[data-theme="dark"] .navbar__item {
+  color: #fff;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.35);
+  background: rgba(0, 0, 0, 0.12);
+  border-color: rgba(255, 255, 255, 0.4);
+}
+
+.navbar[data-theme="light"] .navbar__item {
+  color: #03240f;
+  text-shadow: 0 1px 1px rgba(255, 255, 255, 0.4);
+  background: rgba(255, 255, 255, 0.18);
+  border-color: rgba(52, 35, 5, 0.22);
+}
+
+.navbar[data-theme="light"] .navbar__item--icon img {
+  filter: invert(1) brightness(0.2) saturate(0);
+  transition: filter 0.45s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.navbar[data-theme="dark"] .navbar__item--icon img {
+  filter: none;
+  transition: filter 0.45s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Light-reflection sheen — 45° light source, reflection 80 */
+.navbar__item::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: linear-gradient(
+    var(--glass-light-angle),
+    rgba(255, 255, 255, calc(var(--glass-reflection) * 0.55)) 0%,
+    rgba(255, 255, 255, calc(var(--glass-reflection) * 0.15)) 35%,
+    rgba(255, 255, 255, 0) 55%,
+    rgba(255, 255, 255, calc(var(--glass-reflection) * 0.18)) 100%
+  );
+  pointer-events: none;
+  opacity: var(--glass-reflection);
+  transition: opacity 0.3s ease;
+}
+
+.navbar__item > * {
+  position: relative;
+  z-index: 1;
+}
+
+.navbar__item:hover {
+  background: var(--glass-bg-hover);
+  border-color: var(--glass-border-hover);
+  transform: translateY(-2px);
+  box-shadow: var(--glass-shadow-hover);
+}
+
+.navbar__item:hover::before {
+  opacity: 1;
+}
+
+.navbar__item:active {
+  background: var(--glass-bg-active);
+  transform: translateY(0);
+  box-shadow: var(--glass-shadow-active);
+}
+
+.navbar__item:focus-visible {
+  outline: 2px solid rgba(255, 255, 255, 0.7);
+  outline-offset: 3px;
+}
+
+.navbar__item--icon {
+  width: 56px;
+  height: 56px;
+  min-width: 0;
+  padding: 8px;
+}
+
+.navbar__item--icon img {
+  width: 64px;
+  height: 36px;
+  object-fit: contain;
+}
+
+/* =====================================================
+   INFO SECTION — matches Figma frame 1440 × 1263
+   ===================================================== */
+.info {
+  position: relative;
+  width: 100%;
+  height: 1263px;
+  margin-top: 0;
+  background: var(--c-forest) url('/assets/BG_INFO.webp') center / cover no-repeat;
+  overflow: hidden;
+  color: #fff;
+}
+
+/* Ambient backdrop image with radial vignette to forest */
+.info__glow {
+  position: absolute;
+  top: 213px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 1500px;
+  height: 1000px;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  opacity: 0.3;
+  pointer-events: none;
+}
+
+.info__glow::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    ellipse 75% 50% at 50% 50%,
+    rgba(3, 36, 15, 0.6) 0%,
+    rgba(3, 36, 15, 1) 100%
+  );
+  pointer-events: none;
+}
+
+/* Gold radial glow ellipse — Figma Ellipse 8 (2612:14390).
+   Sits between the dark backdrop and the portrait so the person
+   appears to be standing in front of warm light. */
+.info__ellipse {
+  /* ---- TUNABLES — เปลี่ยนค่าตรงนี้เพื่อปรับสี/ความเข้ม/ขอบเบลอ ---- */
+  --ellipse-color:     var(--c-gold);          /* สีตรงกลาง (เช่น #ead389, gold) */
+  --ellipse-fade:      rgba(3, 36, 15, 0);     /* สีขอบ (forest transparent) */
+  --ellipse-intensity: 0.8;                      /* 0–1 ความสว่าง */
+  --ellipse-spread:    80%;                    /* จุดที่ไล่จนถึงโปร่งใส */
+  /* ------------------------------------------------------------ */
+
+  position: absolute;
+  top: 200px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 700px;
+  height: 900px;
+  background: radial-gradient(
+    ellipse 50% 50% at center,
+    var(--ellipse-color) 0%,
+    var(--ellipse-fade) var(--ellipse-spread)
+  );
+  opacity: var(--ellipse-intensity);
+  pointer-events: none;
+  z-index: 0;
+  mix-blend-mode: screen;
+}
+
+.info__portrait {
+  position: absolute;
+  top: 135px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 925px;
+  height: 1390px;
+  object-fit: cover;
+  object-position: top center;
+  pointer-events: none;
+  user-select: none;
+  z-index: 1;
+}
+
+/* Giant IN / FO letters behind the portrait */
+.info__letters {
+  position: absolute;
+  top: 200px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 1360px;
+  max-width: 95vw;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-family: var(--font-serif);
+  font-weight: 700;
+  font-size: 350px;
+  line-height: 70px;
+  color: var(--c-gold);
+  text-shadow: 0 2px 4px rgba(3, 49, 9, 0.5);
+  pointer-events: none;
+  user-select: none;
+  white-space: nowrap;
+  z-index: 0;
+}
+
+.info__letters span {
+  display: inline-block;
+}
+
+/* Bottom fade overlay: transparent → forest, 750px tall */
+.info::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  transform: translateX(-50%);
+  width: 1440px;
+  max-width: 100%;
+  height: 750px;
+  background: linear-gradient(
+    180deg,
+    rgba(3, 36, 15, 0) 0%,
+    var(--c-forest) 66.559%,
+    var(--c-forest) 100%
+  );
+  pointer-events: none;
+  z-index: 2;
+}
+
+.info__copy {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  text-align: center;
+  pointer-events: none;
+}
+
+.info__lede {
+  position: absolute;
+  top: 830px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-family: var(--font-serif);
+  font-weight: 400;
+  font-size: 36px;
+  line-height: 50px;
+  color: #fff;
+  margin: 0;
+  white-space: nowrap;
+}
+
+.info__highlight {
+  color: var(--c-gold);
+  font-style: italic;
+  font-weight: 400;
+}
+
+.info__body {
+  position: absolute;
+  top: 1065px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-family: var(--font-serif);
+  font-weight: 400;
+  font-size: 20px;
+  line-height: 32px;
+  color: #fff;
+  margin: 0;
+  white-space: nowrap;
+}
+
+.info__scroll {
+  position: absolute;
+  bottom: 41px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-family: var(--font-serif);
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 32px;
+  color: var(--c-gold);
+  margin: 0;
+  white-space: nowrap;
+}
+
+/* =====================================================
+   RESPONSIVE
+   ===================================================== */
+@media (max-width: 1024px) {
+  .hero__content {
+    padding: 60px 32px 0;
+  }
+  .hero__tagline {
+    font-size: 28px;
+  }
+  .hero__title {
+    font-size: 44px;
+    line-height: 56px;
+  }
+  .hero__slide {
+    width: auto;
+    max-width: 100%;
+  }
+  .hero__slide p {
+    font-size: 22px;
+    line-height: 32px;
+    white-space: normal;
+  }
+  .info {
+    height: 900px;
+  }
+  .info__letters {
+    font-size: 180px;
+    top: 120px;
+    width: 92vw;
+  }
+  .info__portrait {
+    top: 90px;
+    width: 640px;
+    height: auto;
+    max-width: none;
+  }
+  .info__lede {
+    top: auto;
+    bottom: 240px;
+    font-size: 24px;
+    line-height: 36px;
+    white-space: normal;
+    width: 90%;
+  }
+  .info__body {
+    top: auto;
+    bottom: 110px;
+    font-size: 16px;
+    line-height: 26px;
+    white-space: normal;
+    width: 90%;
+  }
+}
+
+@media (max-width: 640px) {
+  .hero {
+    min-height: 720px;
+  }
+  .hero__content {
+    padding: 48px 20px 0;
+    gap: 28px;
+  }
+  .hero__tagline {
+    font-size: 22px;
+  }
+  .hero__title {
+    font-size: 34px;
+    line-height: 44px;
+  }
+  /* Hide the strapline card + tools pill on phones to keep the hero clean */
+  .hero__slide,
+  .hero__avatars {
+    display: none;
+  }
+  /* ---- Mobile navbar: single glass pill with brand + hamburger ---- */
+  .navbar {
+    width: calc(100% - 32px);
+    max-width: 480px;
+    gap: 0;
+    flex-wrap: nowrap;
+    justify-content: space-between;
+    padding: 8px 8px 8px 12px;
+    background: var(--glass-bg);
+    backdrop-filter: blur(16px) saturate(180%) contrast(110%);
+    -webkit-backdrop-filter: blur(16px) saturate(180%) contrast(110%);
+    border: 1px solid var(--glass-border);
+    border-radius: 100px;
+    box-shadow: var(--glass-shadow);
+  }
+  /* Keep a 16px gap from the top edge once pinned */
+  .navbar--pinned {
+    top: 16px;
+  }
+
+  /* Brand: infinity mark + script wordmark */
+  .navbar__brand {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    text-decoration: none;
+  }
+  .navbar__brand-mark {
+    width: 46px;
+    height: 26px;
+    object-fit: contain;
+  }
+  .navbar__brand-name {
+    font-family: 'Imperial Script', 'Inria Serif', cursive;
+    font-weight: 400;
+    font-size: 20px;
+    line-height: 1;
+    color: #fff;
+  }
+  .navbar[data-theme="light"] .navbar__brand-name { color: #03240f; }
+  .navbar[data-theme="light"] .navbar__brand-mark { filter: invert(1) brightness(0.15) saturate(0); }
+
+  /* Hamburger */
+  .navbar__toggle {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 5px;
+    width: 44px;
+    height: 44px;
+    padding: 10px;
+    background: none;
+    border: none;
+    cursor: pointer;
+  }
+  .navbar__toggle span {
+    display: block;
+    width: 100%;
+    height: 2px;
+    border-radius: 2px;
+    background: #fff;
+    transition: transform 0.3s ease, opacity 0.3s ease;
+  }
+  .navbar[data-theme="light"] .navbar__toggle span { background: #03240f; }
+  /* Animate into an X when open */
+  .navbar--open .navbar__toggle span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+  .navbar--open .navbar__toggle span:nth-child(2) { opacity: 0; }
+  .navbar--open .navbar__toggle span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+  /* Links become a dropdown panel */
+  .navbar__links {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: calc(100% + 12px);   /* opens UP — navbar floats near the bottom */
+    flex-direction: column;
+    gap: 10px;
+    padding: 14px;
+    background: rgba(3, 36, 15, 0.52);
+    backdrop-filter: blur(24px) saturate(180%) contrast(110%);
+    -webkit-backdrop-filter: blur(24px) saturate(180%) contrast(110%);
+    border: 1px solid var(--glass-border);
+    border-radius: 24px;
+    box-shadow: var(--glass-shadow);
+    isolation: isolate;
+    overflow: hidden;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(8px);
+    transition: opacity 0.3s ease, transform 0.3s ease, visibility 0.3s ease;
+  }
+  /* 45° light sheen — same glass treatment as the pill / hero slide */
+  .navbar__links::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background: linear-gradient(
+      var(--glass-light-angle),
+      rgba(255, 255, 255, calc(var(--glass-reflection) * 0.55)) 0%,
+      rgba(255, 255, 255, calc(var(--glass-reflection) * 0.15)) 35%,
+      rgba(255, 255, 255, 0) 55%,
+      rgba(255, 255, 255, calc(var(--glass-reflection) * 0.18)) 100%
+    );
+    pointer-events: none;
+    opacity: var(--glass-reflection);
+    z-index: 0;
+  }
+  .navbar__links > .navbar__item {
+    z-index: 1;
+  }
+  /* Once pinned to the top, the dropdown opens DOWN instead */
+  .navbar--pinned .navbar__links {
+    bottom: auto;
+    top: calc(100% + 12px);
+    transform: translateY(-8px);
+  }
+  .navbar--open .navbar__links {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+  }
+
+  /* Full-width glass pills — same frosted treatment as the main navbar */
+  .navbar__links .navbar__item {
+    width: 100%;
+    min-width: 0;
+    font-size: 16px;
+    padding: 14px;
+  }
+  /* Inside the dropdown the pills always sit on the dark-green panel, so pin
+     ONE consistent colour + blur regardless of the navbar's adaptive theme —
+     otherwise page content (e.g. the orange card) bleeds through unevenly.
+     Higher specificity than the [data-theme] rules; scoped to mobile only so
+     the desktop adaptive navbar is untouched. */
+  .navbar[data-theme="light"] .navbar__links .navbar__item,
+  .navbar[data-theme="dark"] .navbar__links .navbar__item {
+    color: #fff;
+    background: rgba(255, 255, 255, 0.12);
+    border-color: rgba(255, 255, 255, 0.32);
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.35);
+    backdrop-filter: blur(10px) saturate(160%) contrast(105%);
+    -webkit-backdrop-filter: blur(10px) saturate(160%) contrast(105%);
+  }
+  /* Tap feedback = the desktop hover, ported to touch: lift + brighten the
+     glass + turn the sheen on. (`:active` is the touch equivalent of hover;
+     the text ripple is driven separately via DistortedNavText's touch path.) */
+  .navbar__links .navbar__item:active {
+    background: var(--glass-bg-hover);
+    border-color: var(--glass-border-hover);
+    transform: translateY(-2px) scale(1.015);
+    box-shadow: var(--glass-shadow-hover);
+  }
+  .navbar__links .navbar__item:active::before {
+    opacity: 1;
+  }
+  /* The home pill is redundant — the brand logo links home */
+  .navbar__item--icon { display: none; }
+  .info {
+    height: 720px;
+  }
+  .info__letters {
+    font-size: 96px;
+    top: 80px;
+  }
+  .info__portrait {
+    top: 70px;
+    width: 380px;
+  }
+  .info__lede {
+    font-size: 18px;
+    line-height: 28px;
+    bottom: 180px;
+  }
+  .info__body {
+    bottom: 80px;
+    font-size: 14px;
+    line-height: 22px;
+  }
+  .info__scroll {
+    bottom: 24px;
+  }
+  /* Drop the desktop hard breaks so the copy wraps naturally on mobile */
+  .info__br {
+    display: none;
+  }
+}
+
+/* =====================================================
+   SECTION HEAD — shared header pattern (Figma 2606:18947)
+   present (32px) | my (script 128px gold) WORK (96px brown) | 6 projcts (32px)
+   ===================================================== */
+.section-head {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 350px;
+  padding: 0 212px;
+  color: var(--c-forest);
+  overflow: hidden;
+}
+
+.section-head__title {
+  margin: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 1200px;
+  max-width: 100%;
+  font-family: 'Inria Serif', Georgia, serif;
+  font-weight: 700;
+  text-align: center;
+  white-space: nowrap;
+  line-height: 32px;
+}
+
+.section-head__meta {
+  font-family: 'Inria Serif', Georgia, serif;
+  font-weight: 700;
+  font-size: 32px;
+  line-height: 32px;
+  color: #03240f;
+  flex-shrink: 0;
+}
+
+.section-head__brand {
+  font-size: 0;
+  color: #342305;
+  flex-shrink: 0;
+}
+
+.section-head__brand .section-head__em {
+  font-family: 'Imperial Script', 'Inria Serif', cursive;
+  font-style: normal;
+  font-weight: 400;
+  font-size: 128px;
+  line-height: 32px;
+  color: #dcb94f;
+  margin-right: 12px;
+}
+
+.section-head__brand .section-head__caps {
+  font-family: 'Inria Serif', Georgia, serif;
+  font-weight: 700;
+  font-size: 96px;
+  line-height: 32px;
+  color: #342305;
+  letter-spacing: 0;
+}
+
+/* Centered solo head (used by EXPERIENCE / PLAYGROUND) */
+.section-head--solo {
+  height: auto;
+  padding: 80px 60px 40px;
+}
+.section-head--solo .section-head__title {
+  width: auto;
+  justify-content: center;
+  gap: 20px;
+  font-size: 72px;
+  line-height: 1.1;
+}
+.section-head--solo .section-head__caps {
+  font-family: 'Inria Serif', Georgia, serif;
+  font-weight: 700;
+  color: #342305;
+  letter-spacing: 0;
+}
+.section-head--solo .section-head__em {
+  font-family: 'Imperial Script', 'Inria Serif', cursive;
+  font-style: normal;
+  font-weight: 400;
+  color: #dcb94f;
+  font-size: 96px;
+}
+
+/* =====================================================
+   WORK (Figma 2606:18946)
+   container: flex gap 16px between cols, padding 0 60px
+   column: gap 32px between cards
+   card image: bg #cfcfcf, rounded 8px, h 420px (donation/lab 568px)
+   "Coming soon": Inria Bold 48px, #342305
+   caption: 20px / 32px, title bold, sub regular, color #342305
+   ===================================================== */
+.work {
+  position: relative;
+  background: var(--c-cream);
+  color: var(--c-forest);
+  padding: 0 0 0;
+}
+
+.work__grid {
+  display: flex;
+  gap: 16px;
+  justify-content: center;
+  padding: 0 60px;
+  width: 100%;
+}
+
+.work__col {
+  flex: 1 1 0;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+/* Desktop: cap each work column at the design width so the cards don't stretch
+   on wide monitors (the grid stays centered). Tablet/mobile keep full width. */
+@media (min-width: 1025px) {
+  .work__col {
+    max-width: 652.5px;
+  }
+}
+
+.work-card {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 100%;
+}
+
+.work-card__hero {
+  position: relative;
+  width: 100%;
+  height: 420px;
+  border-radius: 8px;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #cfcfcf;
+  padding: 10px;
+}
+
+.work-card--tall .work-card__hero {
+  height: 568px;
+}
+
+/* Donation-CSR slideshow — Main_TMN.mp4 → TMN_2.webp → TMN_3.webp
+   3s each, instant swap (no fade), looped via setInterval. */
+.work-card__hero--tmn {
+  padding: 0;
+  background: #cfcfcf;
+  overflow: hidden;
+}
+
+.tmn-slide {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  display: none;
+}
+
+.tmn-slide.is-active {
+  display: block;
+}
+
+/* Hover the Donation-CSR card → blur the media + reveal "View Project" */
+.work-card__hero--tmn .tmn-slide {
+  transition: filter 0.4s ease, transform 0.4s ease;
+}
+.work-card__view {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-serif);
+  font-weight: 700;
+  font-size: 32px;
+  letter-spacing: 0.02em;
+  color: #fff;
+  background: rgba(0, 0, 0, 0.28);
+  opacity: 0;
+  transition: opacity 0.4s ease;
+  pointer-events: none;
+}
+.work-card__hero--tmn:hover .tmn-slide.is-active {
+  filter: blur(8px);
+  transform: scale(1.05);
+}
+.work-card__hero--tmn:hover .work-card__view {
+  opacity: 1;
+}
+
+.work-card--link {
+  cursor: pointer;
+}
+
+/* Plain auto-playing, looping video filling the card hero. */
+.work-card__hero--video {
+  padding: 0;
+  background: #cfcfcf;
+  overflow: hidden;
+}
+.work-card__video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  display: block;
+  transition: filter 0.4s ease, transform 0.4s ease;
+}
+/* Hover → blur the video + reveal "View Project" (same as the --tmn cards) */
+.work-card__hero--video:hover .work-card__video {
+  filter: blur(8px);
+  transform: scale(1.05);
+}
+.work-card__hero--video:hover .work-card__view {
+  opacity: 1;
+}
+
+.work-card__soon {
+  font-family: 'Inria Serif', Georgia, serif;
+  font-weight: 700;
+  font-style: normal;
+  font-size: 48px;
+  line-height: 32px;
+  color: #342305;
+  white-space: nowrap;
+  letter-spacing: 0;
+}
+
+.work-card__caption {
+  display: flex;
+  gap: 16px;
+  align-items: flex-start;
+  width: 100%;
+  font-family: 'Inria Serif', Georgia, serif;
+  font-size: 18px;
+  line-height: 24px;
+  color: #342305;
+}
+
+.work-card__caption span:first-child {
+  flex: 1 1 0;
+  min-width: 0;
+  font-weight: 700;
+}
+
+.work-card__caption span:last-child {
+  flex-shrink: 0;
+  text-align: center;
+  white-space: nowrap;
+  font-weight: 400;
+}
+
+
+/* =====================================================
+   EXPERIENCE + SKILLS (Figma 2606:19028)
+   Header 350px → Experience 900px → Skills 900px
+   ===================================================== */
+.exp {
+  position: relative;
+  background: var(--c-cream);
+  color: #342305;
+  padding: 0;
+}
+
+/* Section head variant for "EXPERIENCE and SKILLS" inline */
+.section-head--inline .section-head__title {
+  width: 1200px;
+  justify-content: center;
+  gap: 0;
+  font-size: 0;
+  line-height: 32px;
+  white-space: pre;
+}
+.section-head--inline .section-head__caps {
+  font-family: 'Inria Serif', Georgia, serif;
+  font-weight: 700;
+  font-size: 96px;
+  line-height: 32px;
+  color: #342305;
+}
+.section-head--inline .section-head__em {
+  font-family: 'Imperial Script', 'Inria Serif', cursive;
+  font-style: normal;
+  font-weight: 400;
+  font-size: 128px;
+  line-height: 32px;
+  color: #dcb94f;
+  margin: 0 24px;
+}
+
+/* Experience block — fixed 900px tall, centered */
+.exp__block {
+  height: auto;
+  min-height: 600px;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 0;
+  max-width: none;
+  margin: 0;
+}
+
+.exp__heading {
+  text-align: center;
+  font-family: 'Inria Serif', Georgia, serif;
+  font-weight: 700;
+  font-size: 64px;
+  line-height: 32px;
+  letter-spacing: 0;
+  margin: 0;
+  color: #342305;
+  white-space: nowrap;
+}
+
+.exp__row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0;
+  padding: 0 60px;
+  width: 100%;
+}
+
+/* Desktop: keep a fixed 70px gap between the two columns (matching the 1440px
+   design) instead of letting space-between balloon it on wide monitors. */
+@media (min-width: 1025px) {
+  .exp__row {
+    justify-content: center;
+    gap: 70px;
+  }
+}
+
+/* Left: 500px column with 300×300 placeholder + caption */
+.exp__visual {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap:  20px;
+  width: 550px;
+  padding: 0;
+  flex-shrink: 0;
+}
+
+/* Stacked image area — two webp layers cross-fade based on which
+   timeline row the user hovers (CSS :has() row selector below). */
+.exp__visual-stage {
+  position: relative;
+  width: 180px;
+  height: 280px;
+  align-self: center;
+  margin-top: -8px; /* nudge up so the photo's content top aligns with
+                       the first timeline row (which is grid-centered
+                       inside its own ~96px row height). */
+}
+
+.exp__visual-img {
+  width: 250px;
+  height: 280px;
+  border-radius: 8px;
+  object-fit: cover;
+  display: block;
+}
+
+.exp__visual-stage .exp__visual-img {
+  position: absolute;
+  inset: 0;
+  object-position: top center;
+  transition: opacity 0.5s cubic-bezier(0.25, 0.1, 0.25, 1);
+}
+
+/* Visibility driven by the .is-active class which React applies based
+   on hover (desktop) or click/tap (touch). Both layers stay mounted
+   for instant cross-fade. */
+.exp__visual-stage .exp__visual-img { opacity: 0; }
+.exp__visual-stage .exp__visual-img.is-active { opacity: 1; }
+
+/* Scale only on actual hover — no scale in the default state.
+   The .is-active class is still applied to drive the image swap,
+   but does NOT trigger scale; only :hover does.
+   Shared by .timeline--education and .timeline--experience. */
+.timeline--education .timeline__item,
+.timeline--experience .timeline__item {
+  cursor: pointer;
+  outline: none;
+  -webkit-tap-highlight-color: transparent;
+  transform-origin: left center;
+  transition: transform 0.4s cubic-bezier(0.25, 0.1, 0.25, 1);
+}
+.timeline--education .timeline__item:hover,
+.timeline--experience .timeline__item:hover {
+  transform: scale(1.04);
+}
+.timeline--education .timeline__item:focus-visible,
+.timeline--experience .timeline__item:focus-visible {
+  outline: 2px solid rgba(52, 35, 5, 0.4);
+  outline-offset: 4px;
+  border-radius: 4px;
+}
+
+.exp__visual .work-card__soon {
+  width: 300px;
+  height: 300px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #cfcfcf;
+  border-radius: 8px;
+  padding: 10px;
+  font-family: 'Inria Serif', Georgia, serif;
+  font-weight: 700;
+  font-style: normal;
+  font-size: 36px;
+  line-height: 32px;
+  color: #342305;
+}
+
+.exp__visual-caption {
+  font-family: 'Inria Serif', Georgia, serif;
+  font-weight: 700;
+  font-size: 36px;
+  line-height: 32px;
+  letter-spacing: 0;
+  color: #342305;
+  margin: 0;
+}
+
+/* Figma 2694:14180 — "QUIETLY *powerful* DIGITAL EXPERIENCES" */
+.exp__visual-caption--mixed {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;               /* spacing between the two caption lines */
+  font-size: 0;            /* parent shows nothing; children carry their own sizes */
+  text-align: center;
+  letter-spacing: 0;
+  color: #342305;
+}
+
+.exp__visual-caption__row {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+}
+
+.exp__visual-caption__caps {
+  font-family: 'Inria Serif', Georgia, serif;
+  font-weight: 700;
+  font-size: 40px;
+  line-height: 1;
+  color: #342305;
+}
+
+.exp__visual-caption__script {
+  font-family: 'Imperial Script', 'Inria Serif', cursive;
+  font-weight: 400;
+  font-style: normal;
+  font-size: 56px;
+  line-height: 1;
+  color: #dcb94f;
+}
+
+.exp__visual-sub {
+  font-family: 'Inria Serif', Georgia, serif;
+  font-style: normal;
+  font-weight: 400;
+  font-size: 18px;
+  line-height: 24px;
+  color: #03240f;
+  text-align: center;
+  margin: 0;
+  max-width: 500px;
+}
+
+/* Timeline column — 700px */
+.timeline {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  width: 700px;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.timeline__item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 14px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid #d1d1d1;
+}
+
+/* Left group (logo + org) and right group (date + role) as stacked columns */
+.timeline__left {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+}
+
+.timeline__right {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 8px;
+}
+
+.timeline__date,
+.timeline__role {
+  text-align: right;
+}
+
+.timeline__logo {
+  height: 48px;
+  width: auto;
+  display: block;
+  flex-shrink: 0;
+  color: #342305;
+}
+
+svg.timeline__logo {
+  background: none;
+  border-radius: 0;
+}
+
+.timeline__org,
+.timeline__role {
+  font-family: 'Inria Serif', Georgia, serif;
+  font-weight: 700;
+  font-size: 16px;
+  line-height: 1.2;
+  color: #342305;
+  margin: 0;
+}
+
+.timeline__date {
+  font-family: 'Inria Serif', Georgia, serif;
+  font-weight: 700;
+  font-size: 40px;
+  line-height: 1;
+  color: #342305;
+  letter-spacing: 0;
+  margin: 0;
+}
+
+/* Per-character slide-up reveal for the timeline dates (RollingNumber).
+   Characters start below + transparent, then rise into place with a
+   randomized delay set inline via --d when .is-in is added. */
+.roll-num {
+  display: inline-block;
+  white-space: pre;
+}
+.roll-char {
+  display: inline-block;
+  white-space: pre;
+  transform: translateY(0.8em);
+  opacity: 0;
+}
+.roll-num.is-in .roll-char {
+  animation: roll-up 0.55s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  animation-delay: var(--d, 0s);
+}
+.roll-num--static .roll-char {
+  transform: none;
+  opacity: 1;
+  animation: none;
+}
+@keyframes roll-up {
+  from { transform: translateY(0.8em); opacity: 0; }
+  to   { transform: translateY(0); opacity: 1; }
+}
+
+/* Live indicator — pulsing green dot beside the current-job date.
+   Only used on the first timeline row (2024 - NOW). */
+.timeline__live-dot {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  margin-right: 10px;
+  border-radius: 50%;
+  background: #1ecb4f;
+  vertical-align: 0.22em;
+  position: relative;
+  box-shadow: 0 0 0 0 rgba(30, 203, 79, 0.7);
+  animation: live-pulse 1.6s ease-out infinite;
+}
+
+@keyframes live-pulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(30, 203, 79, 0.7);
+    transform: scale(1);
+  }
+  70% {
+    box-shadow: 0 0 0 10px rgba(30, 203, 79, 0);
+    transform: scale(1.05);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(30, 203, 79, 0);
+    transform: scale(1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .timeline__live-dot {
+    animation: none;
+  }
+}
+
+/* =====================================================
+   SKILLS (dark band, 900px)
+   ===================================================== */
+.skills {
+  position: relative;
+  height: 850px;
+  width: 100%;
+  background: #03240f;
+  color: #fff;
+  overflow: hidden;
+  padding: 0;
+}
+
+.skills::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: url('/assets/BG_SkillsTools.webp');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.skills__heading {
+  position: absolute;
+  left: 50%;
+  top: 110px;
+  transform: translateX(-50%);
+  text-align: center;
+  font-family: 'Inria Serif', Georgia, serif;
+  font-weight: 700;
+  font-size: 0;
+  line-height: 32px;
+  margin: 0;
+  color: #fff;
+  white-space: pre;
+  z-index: 2;
+}
+
+.skills__heading .section-head__caps {
+  font-family: 'Inria Serif', Georgia, serif;
+  font-weight: 700;
+  font-size: 64px;
+  line-height: 32px;
+  color: #fff;
+  letter-spacing: 0;
+}
+
+.skills__heading .section-head__em {
+  font-family: 'Imperial Script', 'Inria Serif', cursive;
+  font-style: normal;
+  font-weight: 400;
+  font-size: 64px;
+  line-height: 32px;
+  color: #dcb94f;
+  margin: 0 16px;
+}
+
+.skills__sub {
+  position: absolute;
+  left: 50%;
+  top: 178px;
+  transform: translateX(-50%);
+  font-family: 'Inria Serif', Georgia, serif;
+  font-style: normal;
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 24px;
+  color: #fff;
+  margin: 0;
+  white-space: nowrap;
+  z-index: 2;
+}
+
+.skills__grid {
+  position: absolute;
+  left: 50%;
+  top: 264px;
+  transform: translateX(-50%);
+  width: 1138px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px 32px;
+  z-index: 2;
+}
+
+/* Carousel indicators — hidden on desktop, shown on mobile */
+.skills__dots {
+  display: none;
+}
+
+.skill-card {
+  position: relative;
+  padding: 20px;
+  border-radius: 24px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid var(--glass-border);
+  backdrop-filter: blur(8px) saturate(180%) contrast(110%);
+  -webkit-backdrop-filter: blur(8px) saturate(180%) contrast(110%);
+  box-shadow:
+    0 8px 32px rgba(3, 36, 15, 0.35),
+    inset 0 1px 0 rgba(255, 255, 255, calc(var(--glass-reflection) * 0.55)),
+    inset 0 -1px 0 rgba(255, 255, 255, 0.12),
+    inset 1px 0 0 rgba(255, 80, 80, var(--glass-dispersion)),
+    inset -1px 0 0 rgba(80, 140, 255, var(--glass-dispersion));
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start; /* content always starts from the top, consistent across cards */
+  gap: 24px;
+  align-items: flex-start;
+  min-height: auto;
+  overflow: hidden;
+  isolation: isolate;
+  transition:
+    background 0.4s ease,
+    border-color 0.4s ease,
+    box-shadow 0.4s ease,
+    transform 0.4s ease;
+}
+
+/* 45° light sheen — same pattern as .hero__slide / .navbar__item */
+.skill-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: linear-gradient(
+    var(--glass-light-angle),
+    rgba(255, 255, 255, calc(var(--glass-reflection) * 0.55)) 0%,
+    rgba(255, 255, 255, calc(var(--glass-reflection) * 0.15)) 35%,
+    rgba(255, 255, 255, 0) 55%,
+    rgba(255, 255, 255, calc(var(--glass-reflection) * 0.18)) 100%
+  );
+  pointer-events: none;
+  opacity: var(--glass-reflection);
+  z-index: 0;
+}
+
+.skill-card > * {
+  position: relative;
+  z-index: 1;
+}
+
+.skill-card:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: var(--glass-border-hover);
+  transform: translateY(-2px);
+}
+
+.skill-card__num {
+  font-family: 'Inria Serif', Georgia, serif;
+  font-weight: 400;
+  font-size: 24px;
+  line-height: 1;
+  letter-spacing: 0;
+  color: #fff;
+  margin: 0;
+}
+.skill-card__num span {
+  font-size: 16px;
+}
+
+.skill-card__cols {
+  display: flex;
+  gap: 24px;
+  width: 100%;
+}
+
+.skill-card__cols ul {
+  list-style: disc;
+  margin: 0;
+  padding: 0 0 0 24px;
+  flex: 1 1 0;
+  min-width: 0;
+}
+
+.skill-card__cols li {
+  font-family: 'Inria Serif', Georgia, serif;
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 24px;
+  color: #fff;
+}
+
+/* 7-dot indicator row, 152×32 overlap */
+.skill-card__dots {
+  position: relative;
+  width: 176px;
+  height: 32px;
+  display: block;
+  margin-top: 0;
+}
+
+.skill-card__dot {
+  position: absolute;
+  top: 0;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.16);
+  border: 1.5px solid rgba(255, 255, 255, 0.45);
+  margin: 0;
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+}
+/* Dot that holds a tool logo — solid light disc with a centered icon. */
+.skill-card__dot--logo {
+  background: #000;
+  border-color: rgba(255, 255, 255, 0.28);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+.skill-card__dot--logo img {
+  width: 62%;
+  height: 62%;
+  object-fit: contain;
+}
+/* Logo whose own artwork is the background — fill the whole disc. */
+.skill-card__dot--fill {
+  background: transparent;
+}
+.skill-card__dot--fill img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+/* Left circle sits on top, overlapping toward the right (descending z). */
+.skill-card__dot:nth-child(1) { left: 0;     z-index: 7; }
+.skill-card__dot:nth-child(2) { left: 24px;  z-index: 6; }
+.skill-card__dot:nth-child(3) { left: 48px;  z-index: 5; }
+.skill-card__dot:nth-child(4) { left: 72px;  z-index: 4; }
+.skill-card__dot:nth-child(5) { left: 96px;  z-index: 3; }
+.skill-card__dot:nth-child(6) { left: 120px; z-index: 2; }
+.skill-card__dot:nth-child(7) { left: 144px; z-index: 1; }
+
+/* =====================================================
+   PLAYGROUND
+   ===================================================== */
+.playground {
+  background: var(--c-cream);
+  color: var(--c-forest);
+  padding-bottom: 0;
+}
+
+
+
+/* Playground sized to fit a single screen — Figma Frame 39 = 900px tall,
+   header 350px + row block centered with 175px breathing room top/bottom */
+.exp__block--playground {
+  height: auto;
+  min-height: 550px;
+  gap: 0;
+  justify-content: flex-start;
+  padding: 0;
+}
+
+/* Education timeline — 60px gap between rows (Figma 2606:19138) */
+.timeline--education {
+  gap: 60px;
+}
+
+/* "my story" cursive (PLAYGROUND header) — uses same script font as "and" */
+.section-head__em--story {
+  font-family: 'Imperial Script', 'Inria Serif', cursive !important;
+  font-style: normal !important;
+}
+
+/* Round logo variant (Keatkeawwittaya) */
+.timeline__logo--round {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+}
+.exp__visual-caption {
+  font-family: 'Inria Serif', Georgia, serif;
+  font-weight: 700;
+  font-size: 40px;
+  line-height: 32px;
+  color: #342305;
+}
+
+/* "my story" + "EDUCATION" on a single baseline-aligned line */
+.exp__visual-caption__row--edu {
+  gap: 12px;
+}
+
+.exp__visual-caption__my {
+  font-family: 'Imperial Script', 'Inria Serif', cursive;
+  font-weight: 400;
+  font-style: normal;
+  font-size: 56px;
+  line-height: 32px;
+  color: #dcb94f;
+}
+
+.exp__visual-sub {
+  font-family: 'Inria Serif', Georgia, serif;
+  font-style: normal;
+  font-weight: 400;
+  font-size: 18px;
+  line-height: 24px;
+  color: #03240f;
+  text-align: center;
+  margin: 0;
+  max-width: 500px;
+}
+
+/* =====================================================
+   RESPONSIVE — new sections
+   ===================================================== */
+@media (max-width: 1024px) {
+  .section-head { height: auto; padding: 60px 24px; }
+  .section-head__title { flex-direction: column; gap: 16px; width: auto; white-space: normal; }
+  .section-head__brand .section-head__em { font-size: 72px; }
+  .section-head__brand .section-head__caps { font-size: 54px; }
+  .section-head__meta { font-size: 22px; }
+  .work__grid { flex-direction: column; gap: 32px; padding: 0 24px; }
+  .work-card__hero, .work-card--tall .work-card__hero { height: auto; aspect-ratio: 652 / 420; }
+  .work-card--tall .work-card__hero { aspect-ratio: 652 / 568; }
+  .work-card__title { font-size: 48px; }
+  .work-card__truemoney { font-size: 28px; padding: 0 24px; }
+  .exp__row { flex-direction: column; gap: 60px; padding: 0 24px; }
+  .exp__visual { width: 100%; padding: 0; }
+  .exp__block { height: auto; padding: 80px 0; gap: 60px; }
+  .timeline { width: 100%; max-width: none; }
+  .skills { height: auto; padding: 100px 24px 120px; }
+  .skills::before { width: 200%; left: -50%; transform: none; height: 100%; bottom: 0; }
+  .skills__grid { position: static; transform: none; left: auto; top: auto; }
+  /* position: relative (not static) keeps them in flow but lets z-index apply,
+     so they paint above .skills::before instead of being covered by it */
+  .skills__heading,
+  .skills__sub { position: relative; z-index: 2; transform: none; left: auto; top: auto; }
+  .skills__heading { margin: 0 auto 16px; text-align: center; }
+  .skills__sub { margin: 0 auto 40px; text-align: center; white-space: normal; padding: 0 24px; }
+  .skills__grid { width: 100%; max-width: 1138px; grid-template-columns: 1fr; gap: 40px; }
+  .timeline__date { font-size: 36px; }
+  .section-head--inline .section-head__title { flex-direction: row; flex-wrap: wrap; justify-content: center; }
+  .section-head--inline .section-head__caps { font-size: 56px; }
+  .section-head--inline .section-head__em { font-size: 80px; margin: 0 12px; }
+}
+
+/* Tablet — keep the brand head as a single side-by-side row like desktop */
+@media (min-width: 641px) and (max-width: 1024px) {
+  .section-head__title {
+    flex-direction: row;
+    justify-content: space-between;
+    width: 1200px;
+    gap: 0;
+    white-space: nowrap;
+  }
+}
+
+@media (max-width: 640px) {
+  /* Equal vertical spacing — tighten line-height so the brand box hugs the
+     glyphs and the 16px column gap reads evenly above and below it. */
+  .section-head__title { gap: 16px; }
+  .section-head__brand .section-head__em,
+  .section-head__brand .section-head__caps { line-height: 1; }
+  .section-head__brand .section-head__em { font-size: 56px; }
+  .section-head__brand .section-head__caps { font-size: 40px; }
+  .section-head__meta { font-size: 18px; }
+  .work-card__title { font-size: 32px; top: 24px; }
+  .work-card__kicker { font-size: 14px; left: 20px; top: 12px; }
+  .work-card__truemoney { font-size: 20px; top: 100px; padding: 0 20px; }
+  .work-card__phones { transform: translateX(-50%) scale(0.7); top: 110px; }
+  .work-card__soon { font-size: 32px; }
+  .work-card__caption { font-size: 14px; flex-direction: column; gap: 2px; }
+  .exp__heading { font-size: 40px; letter-spacing: 0; }
+  .timeline__item { flex-direction: column; align-items: flex-start; gap: 16px; }
+  .timeline__right { text-align: left; align-items: flex-start; }
+  .timeline__date { justify-content: flex-start; font-size: 32px; }
+  /* ---- Skills & Tools: full-bleed swipeable carousel ---- */
+  /* Drop the section's side padding so the carousel reaches the screen edges;
+     the heading/sub get their own inline padding back below. */
+  .skills { padding-left: 0; padding-right: 0; }
+
+  .skills__heading {
+    white-space: normal;
+    padding: 0 24px;
+  }
+  .skills__heading .section-head__caps { font-size: 34px; }
+  .skills__heading .section-head__em { font-size: 40px; margin: 0 10px; }
+  .skills__sub {
+    white-space: normal;
+    width: auto;
+    padding: 0 24px;
+  }
+
+  .skills__grid {
+    display: flex;
+    grid-template-columns: none;
+    gap: 12px;
+    width: 100%;
+    max-width: none;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    padding: 4px 16px;       /* small peek + lets first/last card center */
+  }
+  .skills__grid::-webkit-scrollbar { display: none; }
+  .skill-card {
+    flex: 0 0 calc(100% - 64px);
+    min-height: auto;
+    scroll-snap-align: center;
+  }
+  .skill-card__cols { flex-direction: column; gap: 12px; }
+
+  .skills__dots {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 24px;
+    position: relative;
+    z-index: 2;
+  }
+  .skills__dot {
+    width: 8px;
+    height: 8px;
+    padding: 0;
+    border: none;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.35);
+    cursor: pointer;
+    transition: width 0.3s ease, background-color 0.3s ease;
+  }
+  .skills__dot.is-active {
+    width: 24px;
+    border-radius: 4px;
+    background: var(--c-gold);
+  }
+  .section-head--inline .section-head__caps { font-size: 40px; }
+  .section-head--inline .section-head__em { font-size: 56px; margin: 0 8px; }
+}
+
+/* =====================================================
+   FOOTER  (Figma node 2775:18894)
+   ===================================================== */
+.footer {
+  /* Pinned behind the page — the scrolling content slides up to reveal it. */
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 0;
+  overflow: hidden;
+  /* Forest → bright-green base behind the photo (Figma gradient) */
+  background: linear-gradient(180deg, var(--c-forest) 0%, var(--c-green-bright) 168%);
+  padding: 40px clamp(24px, 14vw, 200px) 80px;
+}
+
+/* Nature photo backdrop (BG_footer.webp) */
+.footer__bg {
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: center top;
+  z-index: 0;
+}
+/* Top fade — forest green melts into the photo so the labels stay legible
+   and the footer blends with the section above (Figma overlay 10%→47%). */
+.footer__bg::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    180deg,
+    var(--c-forest) 10%,
+    rgba(3, 36, 15, 0) 47%
+  );
+}
+
+.footer__inner {
+  position: relative;
+  z-index: 1;
+  max-width: 1440px;
+  margin: 0 auto;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 40px;
+}
+
+.footer__col {
+  display: flex;
+  flex-direction: column;
+  gap: 48px;
+}
+
+.footer__label {
+  margin: 0;
+  font-family: var(--font-serif);
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 32px;
+  letter-spacing: 0.04em;
+  color: var(--c-gold);
+  white-space: nowrap;
+}
+
+.footer__links {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  width: 200px;
+}
+
+.footer__link {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+  color: #fff;
+  transition: color 0.3s ease;
+}
+.footer__link span {
+  position: relative;
+  flex: 0 1 auto;
+  margin-right: auto;
+  min-width: 0;
+  font-family: var(--font-serif);
+  font-weight: 700;
+  font-size: 24px;
+  line-height: 32px;
+}
+.footer__link span::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -2px;
+  width: 100%;
+  height: 2px;
+  background: currentColor;
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.3s ease;
+}
+.footer__link:hover span::after {
+  transform: scaleX(1);
+}
+.footer__arrow {
+  flex-shrink: 0;
+  width: 24px;
+  height: 24px;
+  color: #fff;
+  transition: transform 0.3s ease, color 0.3s ease;
+}
+.footer__link:hover {
+  color: var(--c-gold);
+}
+.footer__link:hover .footer__arrow {
+  color: var(--c-gold);
+  transform: translate(2px, -2px);
+}
+
+@media (max-width: 1024px) {
+  /* On tablet/mobile the footer is taller than the viewport, so the pinned
+     reveal would clip its top. Put it back in normal flow — it scrolls into
+     view and shows in full. */
+  .footer { position: relative; z-index: 1; }
+  .homepage { padding-bottom: 0; }
+
+  .footer__inner { flex-wrap: wrap; gap: 48px 40px; }
+}
+
+@media (max-width: 640px) {
+  .footer { padding: 32px 24px 56px; }
+  .footer__inner { flex-direction: column; gap: 40px; }
+  .footer__col { gap: 24px; width: 100%; }
+  .footer__links { width: 100%; }
+  .footer__link span { font-size: 20px; }
+}
+
+/* ============== "Call" phone popup (desktop) ============== */
+.phone-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  background: rgba(0, 0, 0, 0.55);
+  backdrop-filter: blur(4px);
+  animation: phone-fade 0.2s ease;
+}
+.phone-modal__card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  min-width: 300px;
+  padding: 40px 36px 32px;
+  border-radius: 20px;
+  background: rgba(20, 28, 22, 0.92);
+  border: 1px solid rgba(234, 211, 137, 0.35);
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.5);
+  animation: phone-pop 0.25s cubic-bezier(0.2, 0.9, 0.3, 1.2);
+}
+.phone-modal__close {
+  position: absolute;
+  top: 10px;
+  right: 14px;
+  background: none;
+  border: none;
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 26px;
+  line-height: 1;
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+.phone-modal__close:hover { color: #fff; }
+.phone-modal__label {
+  margin: 0;
+  font-size: 12px;
+  letter-spacing: 0.18em;
+  color: var(--c-gold);
+}
+.phone-modal__number {
+  font-family: var(--font-serif);
+  font-weight: 700;
+  font-size: 32px;
+  line-height: 1;
+  color: #fff;
+  text-decoration: none;
+  letter-spacing: 0.02em;
+}
+.phone-modal__copy {
+  margin-top: 4px;
+  padding: 10px 24px;
+  border-radius: 999px;
+  border: 1px solid rgba(234, 211, 137, 0.5);
+  background: transparent;
+  color: var(--c-gold);
+  font-size: 14px;
+  cursor: pointer;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+.phone-modal__copy:hover {
+  background: var(--c-gold);
+  color: #14241a;
+}
+@keyframes phone-fade {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+@keyframes phone-pop {
+  from { opacity: 0; transform: translateY(12px) scale(0.96); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+/* =====================================================
+   CERTIFICATIONS — auto-scrolling marquee + lightbox
+   ===================================================== */
+.cers {
+  background: var(--c-cream);
+  color: var(--c-forest);
+  padding-bottom: 80px;
+}
+
+/* Smaller heading for this section only — keep the other section heads at 96px */
+.cers .section-head {
+  height: 160px;
+}
+.cers .section-head--inline .section-head__caps {
+  font-size: 32px;
+}
+
+.cers__marquee {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+  /* Soft fade at both edges so tiles ease in/out of view */
+  -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 7%, #000 93%, transparent 100%);
+  mask-image: linear-gradient(90deg, transparent 0, #000 7%, #000 93%, transparent 100%);
+}
+
+.cers__track {
+  display: flex;
+  gap: 24px;
+  width: max-content;
+  /* The list is rendered twice; shift by exactly one copy (-50% minus half
+     the gap) for a seamless, jump-free loop. */
+  animation: cers-scroll 60s linear infinite;
+}
+
+/* Hover anywhere on the strip pauses the auto-scroll so tiles can be clicked */
+.cers__marquee:hover .cers__track {
+  animation-play-state: paused;
+}
+
+.cers__item {
+  flex: 0 0 auto;
+  height: 200px;
+  padding: 0;
+  border: none;
+  background: transparent;
+  border-radius: 12px;
+  overflow: hidden;
+  cursor: pointer;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.cers__item:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 14px 34px rgba(0, 0, 0, 0.22);
+}
+.cers__item img {
+  display: block;
+  height: 200px;
+  width: auto;          /* hug — keep each certificate's own aspect ratio */
+  object-fit: contain;
+}
+
+@keyframes cers-scroll {
+  from { transform: translateX(0); }
+  to   { transform: translateX(calc(-50% - 12px)); }
+}
+
+/* Respect reduced-motion: stop the auto-scroll, allow manual swipe instead */
+@media (prefers-reduced-motion: reduce) {
+  .cers__track { animation: none; }
+  .cers__marquee { overflow-x: auto; }
+}
+
+/* ---- Lightbox ---- */
+.cer-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 48px;
+  background: rgba(0, 0, 0, 0.8);
+  backdrop-filter: blur(6px);
+  animation: phone-fade 0.2s ease;
+}
+.cer-modal__img {
+  max-width: min(90vw, 1100px);
+  max-height: 86vh;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+  border-radius: 8px;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.5);
+  animation: phone-pop 0.25s cubic-bezier(0.2, 0.9, 0.3, 1.2);
+}
+.cer-modal__close {
+  position: absolute;
+  top: 20px;
+  right: 28px;
+  background: none;
+  border: none;
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 40px;
+  line-height: 1;
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+.cer-modal__close:hover { color: #fff; }
+.cer-modal__nav {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 56px;
+  height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  color: #fff;
+  font-size: 32px;
+  line-height: 1;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+.cer-modal__nav:hover { background: rgba(255, 255, 255, 0.25); }
+.cer-modal__nav--prev { left: 24px; }
+.cer-modal__nav--next { right: 24px; }
+.cer-modal__count {
+  position: absolute;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  color: rgba(255, 255, 255, 0.85);
+  font-size: 14px;
+  letter-spacing: 0.1em;
+}
+
+@media (max-width: 640px) {
+  .cers { padding-bottom: 72px; }
+  .cer-modal { padding: 16px; }
+  .cer-modal__nav { width: 44px; height: 44px; font-size: 26px; }
+  .cer-modal__nav--prev { left: 10px; }
+  .cer-modal__nav--next { right: 10px; }
+}

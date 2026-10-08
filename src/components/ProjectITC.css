@@ -1,0 +1,55 @@
+.project-itc {
+  min-height: 100vh;
+  background: #fcf8ee;
+}
+
+/* Edge-to-edge vertical stack — images touch with no gaps. */
+.project-itc__stack {
+  display: block;
+  width: 100%;
+  font-size: 0; /* kills any inline whitespace between <img> */
+  line-height: 0;
+}
+
+.project-itc__img {
+  display: block;
+  width: 100%;
+  height: auto;
+  margin: 0;
+  vertical-align: bottom;
+}
+
+/* Floating back button */
+.project-itc__back {
+  position: fixed;
+  top: 24px;
+  left: 24px;
+  z-index: 10;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 16px 10px 12px;
+  font-family: 'Inria Serif', Georgia, serif;
+  font-size: 16px;
+  color: #03240f;
+  background: rgba(252, 248, 238, 0.85);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(3, 36, 15, 0.15);
+  border-radius: 999px;
+  cursor: pointer;
+  transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.project-itc__back:hover {
+  background: #fff;
+  transform: translateX(-2px);
+}
+
+@media (max-width: 640px) {
+  .project-itc__back {
+    top: 16px;
+    left: 16px;
+    padding: 8px 14px 8px 10px;
+    font-size: 14px;
+  }
+}
