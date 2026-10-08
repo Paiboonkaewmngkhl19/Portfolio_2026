@@ -5,4 +5,8 @@ import react from '@vitejs/plugin-react'
 export default defineConfig({
   base: '/Portfolio_2026/',
   plugins: [react()],
+  // Support older phones (iOS 14+ / Android Chrome 87+), not just recent browsers.
+  build: {
+    target: ['es2020', 'safari14', 'chrome87'],
+  },
 })

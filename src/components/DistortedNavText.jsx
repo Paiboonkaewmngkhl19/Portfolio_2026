@@ -11,6 +11,9 @@ import * as THREE from 'three'
  */
 export default function DistortedNavText({ text, color = '#ffffff' }) {
   const ref = useRef(null)
+  // Some phones (in-app browsers, low-power mode, old GPUs) can't create a
+  // WebGL context — fall back to plain text instead of crashing the page.
+  const labelRef = useRef(null)
 
   useEffect(() => {
     const container = ref.current
@@ -47,11 +50,17 @@ export default function DistortedNavText({ text, color = '#ffffff' }) {
     const camera = new THREE.OrthographicCamera(-0.5, 0.5, 0.5, -0.5, 0.1, 10)
     camera.position.z = 1
 
-    const renderer = new THREE.WebGLRenderer({
-      alpha: true,
-      antialias: true,
-      premultipliedAlpha: true,
-    })
+    let renderer
+    try {
+      renderer = new THREE.WebGLRenderer({
+        alpha: true,
+        antialias: true,
+        premultipliedAlpha: true,
+      })
+    } catch {
+      if (labelRef.current) labelRef.current.style.visibility = 'visible'
+      return
+    }
     renderer.setPixelRatio(dpr)
     renderer.setSize(width, height)
     renderer.setClearColor(0x000000, 0)
@@ -159,8 +168,9 @@ export default function DistortedNavText({ text, color = '#ffffff' }) {
       if (w === width && h === height) return
       width = w; height = h
       renderer.setSize(width, height)
-      const newCv = drawTextCanvas()
-      texture.image = newCv
+      // A resized image needs a fresh GPU texture, not a sub-image update.
+      texture.dispose()
+      texture.image = drawTextCanvas()
       texture.needsUpdate = true
     })
     ro.observe(container)
@@ -195,6 +205,7 @@ export default function DistortedNavText({ text, color = '#ffffff' }) {
       material.dispose()
       texture.dispose()
       renderer.dispose()
+      renderer.forceContextLoss()
       if (container.contains(canvasEl)) container.removeChild(canvasEl)
     }
   }, [text, color])
@@ -214,9 +225,11 @@ export default function DistortedNavText({ text, color = '#ffffff' }) {
       {/* Invisible plain text — drives layout width so the pill sizes to
           the label, even though only the canvas is visible. */}
       <span
+        ref={labelRef}
         aria-hidden="true"
         style={{
           visibility: 'hidden',
+          color,
           fontFamily: "'Inria Serif', Georgia, serif",
           fontWeight: 400,
           fontSize: '16px',
